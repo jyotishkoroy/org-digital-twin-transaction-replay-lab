@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Status</label>
+    <required>true</required>
+    <valueSet><valueSet>
+    <restricted>true</restricted>
+    <valueSetDefinition>
+        <sorted>false</sorted>
+        <value><fullName>CAPTURED</fullName><default>true</default><label>Captured</label></value>
+        <value><fullName>REPLAYED</fullName><default>false</default><label>Replayed</label></value>
+        <value><fullName>FAILED</fullName><default>false</default><label>Failed</label></value>
+    </valueSetDefinition>
+</valueSet></valueSet>
+    <type>Picklist</type>
+</CustomField>

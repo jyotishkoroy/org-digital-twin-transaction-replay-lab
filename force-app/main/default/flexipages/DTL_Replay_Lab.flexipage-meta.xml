@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FlexiPage xmlns="http://soap.sforce.com/2006/04/metadata">
+    <masterLabel>DTL Replay Lab</masterLabel>
+    <type>AppPage</type>
+    <template>
+        <name>flexipage:appHomeTemplateTwoColumnsLeftSidebar</name>
+    </template>
+    <regions>
+        <name>left</name>
+        <type>Region</type>
+        <components>
+            <componentInstance>
+                <componentName>dtlReplayRunner</componentName>
+                <identifier>dtlReplayRunner</identifier>
+            </componentInstance>
+        </components>
+    </regions>
+    <regions>
+        <name>right</name>
+        <type>Region</type>
+        <components>
+            <componentInstance>
+                <componentName>flexipage:richText</componentName>
+                <identifier>dtlAbout</identifier>
+                <componentInstanceProperties>
+                    <name>richTextValue</name>
+                    <value><![CDATA[
+                        <div style="padding:12px">
+                          <h2 style="margin:0 0 8px 0;">Org Digital Twin + Transaction Replay Lab</h2>
+                          <p style="margin:0 0 10px 0;">Capture semantic traces and deterministically replay them for regression validation.</p>
+                          <p style="margin:0; font-size: 12px; opacity: 0.85;">
+                            Built by <strong>Jyotishko Roy</strong> —
+                            <a href="https://orcid.org/0009-0000-2837-4731" target="_blank" rel="noopener">ORCID</a>
+                          </p>
+                        </div>
+                    ]]></value>
+                </componentInstanceProperties>
+            </componentInstance>
+        </components>
+    </regions>
+</FlexiPage>

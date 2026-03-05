@@ -1,0 +1,11 @@
+{
+  "name": "org-digital-twin-transaction-replay-lab",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Salesforce Org Digital Twin & Transaction Replay Lab \u2014 capture semantic traces and deterministically replay them.",
+  "license": "Apache-2.0",
+  "author": "Jyotishko Roy (https://orcid.org/0009-0000-2837-4731)",
+  "scripts": {
+    "test:apex": "sfdx force:apex:test:run -c -r human"
+  }
+}

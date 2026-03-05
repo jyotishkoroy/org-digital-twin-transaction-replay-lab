@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Captured By</label>
+    <referenceTo>User</referenceTo>
+    <relationshipName>DTL_Traces</relationshipName>
+    <relationshipLabel>DTL Traces</relationshipLabel>
+    <type>Lookup</type>
+</CustomField>

@@ -1,0 +1,157 @@
+<template>
+  <div class="dtl-shell">
+    <div class="dtl-header slds-p-around_medium">
+      <div class="dtl-title">
+        <div class="dtl-title-main">Replay Runner</div>
+        <div class="dtl-title-sub">Org Digital Twin + Transaction Replay Lab</div>
+      </div>
+      <div class="dtl-actions">
+        <lightning-button variant="neutral" label="Refresh" onclick={handleRefresh}></lightning-button>
+      </div>
+    </div>
+
+    <div class="dtl-content slds-grid slds-wrap">
+      <!-- Left: trace list -->
+      <div class="slds-col slds-size_1-of-1 slds-large-size_4-of-12 slds-p-around_small">
+        <lightning-card title="Traces" icon-name="custom:custom63">
+          <div class="slds-p-horizontal_small slds-p-bottom_small">
+            <lightning-input type="search" label="Filter by name/status/type" value={filterText} onchange={handleFilter}></lightning-input>
+          </div>
+
+          <template if:true={traces}>
+            <div class="dtl-list" role="list">
+              <template for:each={filteredTraces} for:item="t">
+                <button key={t.id} class={t._rowClass} data-id={t.id} onclick={selectTrace}>
+                  <div class="dtl-row">
+                    <div class="dtl-row-top">
+                      <span class="dtl-row-title">{t.transactionName}</span>
+                      <span class={t._statusClass}>{t.status}</span>
+                    </div>
+                    <div class="dtl-row-meta">
+                      <span class="dtl-pill">{t.traceType}</span>
+                      <span class="dtl-muted">{t.capturedAtHuman}</span>
+                    </div>
+                  </div>
+                </button>
+              </template>
+            </div>
+          </template>
+
+          <template if:true={error}>
+            <div class="slds-p-around_medium slds-text-color_error">{error}</div>
+          </template>
+
+          <template if:false={traces}>
+            <div class="slds-p-around_medium slds-text-color_weak">No traces yet. Seed one via <code>scripts/apex/create_sample_trace.apex</code>.</div>
+          </template>
+
+          <div class="slds-p-around_small dtl-footer">
+            <span>Built by <a href="https://orcid.org/0009-0000-2837-4731" target="_blank" rel="noopener">Jyotishko Roy</a></span>
+          </div>
+        </lightning-card>
+      </div>
+
+      <!-- Right: detail -->
+      <div class="slds-col slds-size_1-of-1 slds-large-size_8-of-12 slds-p-around_small">
+        <lightning-card title="Trace Detail" icon-name="custom:custom18">
+          <template if:true={selected}>
+            <div class="slds-p-around_medium">
+              <div class="slds-grid slds-wrap slds-m-bottom_small">
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_8-of-12">
+                  <div class="dtl-detail-title">{selected.transactionName}</div>
+                  <div class="dtl-muted">Type: <span class="dtl-pill">{selected.traceType}</span> • Status: <span class={selected._statusClass}>{selected.status}</span></div>
+                  <div class="dtl-muted slds-m-top_x-small">
+                    Captured: {selected.capturedAtHuman}
+                    <template if:true={selected.replayRanAtHuman}> • Last replay: {selected.replayRanAtHuman}</template>
+                  </div>
+                </div>
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_4-of-12 slds-text-align_right">
+                  <lightning-button variant="brand" label="Replay" onclick={handleReplay} disabled={replayDisabled}></lightning-button>
+                </div>
+              </div>
+
+              <template if:true={selected.statusMessage}>
+                <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_info slds-m-bottom_small" role="alert">
+                  <span class="slds-assistive-text">Info</span>
+                  <span>{selected.statusMessage}</span>
+                </div>
+              </template>
+
+              <div class="slds-grid slds-wrap dtl-panels">
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-p-around_x-small">
+                  <div class="dtl-panel">
+                    <div class="dtl-panel-h">Inputs</div>
+                    <pre class="dtl-pre">{selected.inputsJsonPretty}</pre>
+                  </div>
+                </div>
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-p-around_x-small">
+                  <div class="dtl-panel">
+                    <div class="dtl-panel-h">Expected Outputs</div>
+                    <pre class="dtl-pre">{selected.expectedOutputsJsonPretty}</pre>
+                  </div>
+                </div>
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-p-around_x-small">
+                  <div class="dtl-panel">
+                    <div class="dtl-panel-h">Replay Outputs</div>
+                    <pre class="dtl-pre">{selected.replayOutputsJsonPretty}</pre>
+                  </div>
+                </div>
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_6-of-12 slds-p-around_x-small">
+                  <div class="dtl-panel">
+                    <div class="dtl-panel-h">Diff</div>
+                    <template if:true={hasDiffs}>
+                      <div class="dtl-diff">
+                        <template for:each={diffRows} for:item="d">
+                          <div key={d.key} class="dtl-diff-row">
+                            <div class="dtl-diff-path">{d.path}</div>
+                            <div class="dtl-diff-type">{d.type}</div>
+                            <div class="dtl-diff-body">
+                              <template if:true={d.hasExpected}><div><span class="dtl-muted">expected:</span> <code>{d.expected}</code></div></template>
+                              <template if:true={d.hasActual}><div><span class="dtl-muted">actual:</span> <code>{d.actual}</code></div></template>
+                            </div>
+                          </div>
+                        </template>
+                      </div>
+                    </template>
+                    <template if:false={hasDiffs}>
+                      <div class="dtl-muted">No diffs (expected == replay outputs).</div>
+                    </template>
+                  </div>
+                </div>
+
+                <div class="slds-col slds-size_1-of-1 slds-p-around_x-small">
+                  <div class="dtl-panel">
+                    <div class="dtl-panel-h">Checkpoints</div>
+                    <template if:true={selected.checkpoints}>
+                      <div class="dtl-checkpoints">
+                        <template for:each={selected.checkpoints} for:item="c">
+                          <div key={c.sequence} class="dtl-cp">
+                            <div class="dtl-cp-h">
+                              <span class="dtl-pill">#{c.sequence}</span>
+                              <span class="dtl-cp-title">{c.label}</span>
+                              <span class="dtl-muted dtl-cp-date">{c.createdDateHuman}</span>
+                            </div>
+                            <pre class="dtl-pre">{c.payloadJsonPretty}</pre>
+                          </div>
+                        </template>
+                      </div>
+                    </template>
+                    <template if:false={selected.checkpoints}>
+                      <div class="dtl-muted">No checkpoints recorded.</div>
+                    </template>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </template>
+
+          <template if:false={selected}>
+            <div class="slds-p-around_medium slds-text-color_weak">
+              Select a trace from the left to inspect and replay it.
+            </div>
+          </template>
+        </lightning-card>
+      </div>
+    </div>
+  </div>
+</template>

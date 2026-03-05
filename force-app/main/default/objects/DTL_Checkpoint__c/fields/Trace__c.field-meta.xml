@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Trace</label>
+    <referenceTo>DTL_Trace__c</referenceTo>
+    <relationshipName>Checkpoints</relationshipName>
+    <relationshipLabel>Checkpoints</relationshipLabel>
+    <required>true</required>
+    <type>Lookup</type>
+</CustomField>

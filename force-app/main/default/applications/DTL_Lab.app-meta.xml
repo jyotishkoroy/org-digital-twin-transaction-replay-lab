@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomApplication xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Org Digital Twin + Transaction Replay Lab</description>
+    <formFactors>Large</formFactors>
+    <label>DTL Lab</label>
+    <navType>Standard</navType>
+    <tabs>DTL_Replay_Lab</tabs>
+    <tabs>DTL_Trace__c</tabs>
+    <tabs>DTL_Checkpoint__c</tabs>
+    <uiType>Lightning</uiType>
+</CustomApplication>
